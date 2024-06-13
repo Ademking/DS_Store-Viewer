@@ -1,0 +1,3 @@
+name = "DS_Store Viewer"
+description = "A simple application to view DS_Store files"
+packages = ["ds_store"]

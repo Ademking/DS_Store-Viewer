@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>DS_Store Viewer</title>
+    <meta name="title" content=".DS_Store Viewer" />
+    <meta
+      name="description"
+      content="View the contents of your .DS_Store files with ease. DS_Store Viewer is a tool for penetration testers to uncover hidden files on servers by analyzing .DS_Store files. Quickly identify and          list concealed files and directories for vulnerability analysis."
+    />
+    <meta name="keywords" content="DS_Store" />
+    <meta name="robots" content="index, follow" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="English" />
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.6.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.6.1/core.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+      body {
+        font-family: "Libre Franklin", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex flex-col items-center justify-center p-10 gap-6">
+      <header class="w-full max-w-3xl">
+        <h1 class="text-2xl font-bold mb-4">DS_Store viewer 📂📄</h1>
+        <p class="text-gray-500 mb-2">
+          View the contents of your .DS_Store files with ease. DS_Store Viewer is a tool for penetration testers to uncover hidden files on servers by analyzing .DS_Store files. Quickly identify and
+          list concealed files and directories for vulnerability analysis.
+        </p>
+      </header>
+      <div id="dropzone" class="w-full max-w-3xl p-12 border-4 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors cursor-pointer">
+        <div class="text-center">
+          <p class="text-gray-500">Drag and drop a file here</p>
+          <p class="text-gray-500">or click to upload</p>
+          <input id="myfile" name="myfile" type="file" class="hidden" />
+        </div>
+      </div>
+      <div class="w-full max-w-3xl">
+        <div id="error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <strong class="font-bold">Error!</strong>
+          <span class="block sm:inline">Error processing file. Check if it's a valid .DS_Store file</span>
+        </div>
+        <textarea readonly 
+          id="fileList"
+          class="flex min-h-[80px] bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full p-4 border border-gray-300 rounded-lg resize-none"
+          rows="5"
+          placeholder="File content will be displayed here"
+        ></textarea>
+        <button
+          id="copyButton"
+          class="inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-1 text-center w-full mt-6 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+        >
+          Copy to clipboard
+        </button>
+      </div>
+      <footer class="w-full max-w-3xl text-gray-500">
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-gray-900 font-medium text-xl mb-4">FAQ:</h3>
+            <div class="space-y-4">
+              <div>
+                <h4 class="text-gray-900 font-medium">What is a .DS_Store file?</h4>
+                <p>.DS_Store files are hidden files created by macOS to store metadata about folders, including custom icons, file positions, and view settings.</p>
+              </div>
+              <div>
+                <h4 class="text-gray-900 font-medium">How can viewing .DS_Store files benefit penetration testing?</h4>
+                <p>
+                  As a pentester, analyzing .DS_Store files can reveal hidden files, directories, or configuration details that are not visible through conventional file listings. This insight can
+                  uncover potential security weaknesses, sensitive data exposures, or paths that could be exploited by attackers. Understanding .DS_Store contents enhances the thoroughness and
+                  effectiveness of security assessments and helps in identifying vulnerabilities before they can be exploited.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 text-center">
+          <p class="text-gray-500">Made with 🍪 by <a href="https://github.com/Ademking" class="text-blue-500">Adem Kouki</a></p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- FAQ -->
+
+    <script>
+      // detect file drop
+      const dropArea = document.querySelector("#dropzone");
+      const copyButton = document.querySelector("#copyButton");
+      dropArea.addEventListener("click", () => {
+        const input = document.querySelector("#myfile");
+        input.click();
+      });
+      dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.classList.add("border-blue-400");
+        dropArea.classList.add("bg-blue-100");
+      });
+      dropArea.addEventListener("dragleave", () => {
+        dropArea.classList.remove("border-blue-400");
+        dropArea.classList.remove("bg-blue-100");
+      });
+      dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropArea.classList.remove("border-blue-400");
+        dropArea.classList.remove("bg-blue-100");
+        // add file to input
+        const file = e.dataTransfer.files[0];
+        console.log(file);
+        const input = document.querySelector("#myfile");
+        input.files = e.dataTransfer.files;
+        // trigger change event
+        const event = new Event("change");
+        input.dispatchEvent(event);
+      });
+
+      copyButton.addEventListener("click", () => {
+        const textarea = document.querySelector("#fileList");
+        textarea.select();
+        document.execCommand("copy");
+      });
+    </script>
+
+    <py-script type="py" src="./main.py" config="./pyscript.toml"></py-script>
+  </body>
+</html>
