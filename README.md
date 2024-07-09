@@ -13,3 +13,7 @@ This tiny web app is built with [pyScript](https://pyscript.net/) and [Tailwind 
 ## License
 
 MIT
+
+## Author
+
+Adem KOUKI
